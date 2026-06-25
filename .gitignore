@@ -5,6 +5,22 @@
 [Bb]uilds/
 Assets/AssetStoreTools*
 
+# Local Unity/Editor state
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+
+# Build artifacts
+[Gg]ame[Bb]uild/
+*.apk
+*.unitypackage
+*.app
+*.exe
+*.x86
+*.x86_64
+*.data
+*.symbols.json
+
 # Visual Studio cache directory
 .vs/
 
@@ -31,7 +47,3 @@ ExportedObj/
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
-
-# Builds
-*.apk
-*.unitypackage
