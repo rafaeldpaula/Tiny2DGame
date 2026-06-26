@@ -1,22 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class StartScreenScript : MonoBehaviour
 {
-    Animator _animator;
+    private const string FadeExitAnimationName = "FadeExit";
 
-    void Start()
+    private Animator _animator;
+    private bool _transitionStarted;
+
+    private void Awake()
     {
-        _animator = gameObject.GetComponent<Animator>();
+        _animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (Input.anyKeyDown)
+        if (_transitionStarted || !Input.anyKeyDown)
         {
-            _animator.Play("FadeExit");
+            return;
         }
+
+        _transitionStarted = true;
+        _animator.Play(FadeExitAnimationName);
     }
 }

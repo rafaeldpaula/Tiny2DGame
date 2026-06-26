@@ -1,35 +1,42 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(SpriteRenderer))]
 public class MovimentarJogadorScript : MonoBehaviour
 {
-    Rigidbody2D _rig;
-    SpriteRenderer _spriteRenderer;
-    //Animator _animator;
+    private Rigidbody2D _rig;
+    private SpriteRenderer _spriteRenderer;
+    private float _moveHorizontal;
 
     [SerializeField]
-    float speed = 5f;
+    private float speed = 5f;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        _rig = gameObject.GetComponent<Rigidbody2D>();
-        _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-        //_animator = gameObject.GetComponent<Animator>();
+        _rig = GetComponent<Rigidbody2D>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    private void Update()
     {
-        float moveHorizontal = Input.GetAxisRaw("Horizontal");
+        _moveHorizontal = Input.GetAxisRaw("Horizontal");
+        UpdateFacingDirection();
+    }
 
-        _rig.velocity = new Vector2(moveHorizontal * speed, _rig.velocity.y);
-        _spriteRenderer.flipX = moveHorizontal < 0;
+    private void FixedUpdate()
+    {
+        _rig.velocity = new Vector2(_moveHorizontal * speed, _rig.velocity.y);
+    }
 
-        //if (moveHorizontal != 0)
-        //    _animator.Play("HeroWalk");
-        //else
-        //    _animator.Play("HeroIdle");
+    private void UpdateFacingDirection()
+    {
+        if (_moveHorizontal < 0f)
+        {
+            _spriteRenderer.flipX = true;
+        }
+        else if (_moveHorizontal > 0f)
+        {
+            _spriteRenderer.flipX = false;
+        }
     }
 }
