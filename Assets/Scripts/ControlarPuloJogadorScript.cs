@@ -1,37 +1,87 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class ControlarPuloJogadorScript : MonoBehaviour
 {
-    Rigidbody2D rig;
+    private const string GroundTag = "Ground";
+
+    private Rigidbody2D rig;
+    private bool _jumpRequested;
 
     [SerializeField]
-    float force = 300f;
+    private float force = 300f;
 
-    bool IsGrounded = false;
+    private bool IsGrounded = false;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        rig = gameObject.GetComponent<Rigidbody2D>();
+        rig = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    private void Update()
     {
-        if (IsGrounded && Input.GetButton("Jump"))
+        if (Input.GetButtonDown("Jump"))
         {
-            rig.AddForce(Vector2.up * force);
-            IsGrounded = false;
+            _jumpRequested = true;
         }
+    }
+
+    private void FixedUpdate()
+    {
+        if (!_jumpRequested)
+        {
+            return;
+        }
+
+        _jumpRequested = false;
+
+        if (!IsGrounded)
+        {
+            return;
+        }
+
+        rig.AddForce(Vector2.up * force);
+        IsGrounded = false;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        IsGrounded = false;
+        UpdateGroundedState(collision);
+    }
 
-        if (collision.gameObject.tag == "Ground")
-            IsGrounded = true;
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        UpdateGroundedState(collision);
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag(GroundTag))
+        {
+            IsGrounded = false;
+        }
+    }
+
+    private void UpdateGroundedState(Collision2D collision)
+    {
+        if (!collision.gameObject.CompareTag(GroundTag))
+        {
+            return;
+        }
+
+        IsGrounded = HasGroundContact(collision);
+    }
+
+    private bool HasGroundContact(Collision2D collision)
+    {
+        foreach (ContactPoint2D contact in collision.contacts)
+        {
+            if (contact.normal.y > 0.5f)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
