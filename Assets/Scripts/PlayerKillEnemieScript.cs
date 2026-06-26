@@ -1,14 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerKillEnemieScript : MonoBehaviour
 {
+    private const string PlayerAttackTag = "PlayerShootToKill";
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "PlayerShootToKill")
+        if (!collision.CompareTag(PlayerAttackTag))
         {
-            Destroy(collision.gameObject);
+            return;
         }
+
+        Destroy(collision.gameObject);
     }
 }
